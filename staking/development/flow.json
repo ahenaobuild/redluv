@@ -1,0 +1,190 @@
+//Create user at node 1
+curl -X POST --data '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "keystore.createUser",
+    "params": {
+        "username": "testUser",
+        "password": "C0ntr4señ@"
+    }
+}' -H 'content-type:application/json;' 127.0.0.1:9650/ext/keystore
+
+//Skip this step, only use when creating new keys for a production environment
+curl -X POST --data '{
+   "jsonrpc":"2.0",
+   "id"     :1,
+   "method" :"avm.exportKey",
+   "params" :{
+       "username":"testUser",
+       "password":"C0ntr4señ@",
+       "address":"X-luv12k4qkg4sqtfcrpvjznzces7gfzq6638q26q9wd"
+   }
+}' -H 'content-type:application/json;' 127.0.0.1:9650/ext/bc/X
+
+//Gain control of resources allocated in genesis block
+curl -X POST --data '{
+   "jsonrpc":"2.0",
+   "id"     :1,
+   "method" :"avm.importKey",
+   "params" :{
+       "username":"testUser",
+       "password":"C0ntr4señ@",
+       "privateKey":"PrivateKey-2S74tF2PpaYzYg7fmMh2nReujK3qwA14YAjftadG6gVozu4BSa"
+   }
+}' -H 'content-type:application/json;' 127.0.0.1:9650/ext/bc/X
+
+//check the resources in the address imported
+curl -X POST --data '{
+   "jsonrpc":"2.0",
+   "id"     :3,
+   "method" :"avm.getBalance",
+   "params" :{
+       "address":"X-luv12k4qkg4sqtfcrpvjznzces7gfzq6638q26q9wd", 
+       "assetID"  :"LUV"
+   }
+}' -H 'content-type:application/json;' 127.0.0.1:9650/ext/bc/X
+
+//create a new addres to test the send function
+curl -X POST --data '{
+   "jsonrpc":"2.0",
+   "id"     :2,
+   "method" :"avm.createAddress",
+   "params" :{
+       "username":"testUser",
+       "password":"C0ntr4señ@"
+   }
+}' -H 'content-type:application/json;' 127.0.0.1:9650/ext/bc/X
+
+//Replace destiny address "to" with the address created above
+curl -X POST --data '{
+   "jsonrpc":"2.0",
+   "id"     :5,
+   "method" :"avm.send",
+   "params" :{
+       "assetID"    :"LUV",
+       "amount"     :3000000000000,
+       "to"         :"X-luv1cvtqrjghv95y39scggepx8alvlfwldentg2n87", 
+       "changeAddr" :"X-luv12k4qkg4sqtfcrpvjznzces7gfzq6638q26q9wd",
+       "username"   :"testUser",
+       "password"   :"C0ntr4señ@"
+   }
+}' -H 'content-type:application/json;' 127.0.0.1:9650/ext/bc/X
+
+//Check the transsaction status changing the txID provided as a response above
+curl -X POST --data '{
+   "jsonrpc":"2.0",
+   "id"     :1,
+   "method" :"avm.getTxStatus",
+   "params" :{
+       "txID":"2tDvdQeSxuUVBkFfFN4h5kKqhN4zDou2vKfRkAB4Tr18gftNtH" 
+   }
+}' -H 'content-type:application/json;' 127.0.0.1:9650/ext/bc/X
+
+//Replace with the address created to verify the resources received
+curl -X POST --data '{
+   "jsonrpc":"2.0",
+   "id"     :3,
+   "method" :"avm.getBalance",
+   "params" :{
+       "address":"X-luv125dkl362m60wpgyf8as4tvp9elx5ekr6eymhwz", 
+       "assetID"  :"LUV"
+   }
+}' -H 'content-type:application/json;' 127.0.0.1:9650/ext/bc/X
+
+//Create a user in node 2
+curl -X POST --data '{
+   "jsonrpc": "2.0",
+   "id": 1,
+   "method": "keystore.createUser",
+   "params": {
+       "username": "testUser",
+       "password": "C0ntr4señ@"
+   }
+}' -H 'content-type:application/json;' 127.0.0.1:9652/ext/keystore
+
+//Create a platform address in node 2
+curl -X POST --data '{
+   "jsonrpc": "2.0",
+   "method": "platform.createAddress",
+   "params": {
+       "username":"testUser",
+       "password":"C0ntr4señ@"
+   },
+   "id": 1
+}' -H 'content-type:application/json;' 127.0.0.1:9652/ext/bc/P
+
+//Replace the new platform address created above in "to"
+curl -X POST --data '{
+   "jsonrpc":"2.0",
+   "id"     :1,
+   "method" :"avm.exportLUV",
+   "params" :{
+       "to":"P-luv1rd4h6asdkkrx7s5kx6aal4ksv069vmm8gu6wam",
+       "destinationChain": "P",
+       "amount": 3000000000000,
+       "changeAddr": "X-luv125dkl362m60wpgyf8as4tvp9elx5ekr6eymhwz",
+       "username":"testUser",
+       "password":"C0ntr4señ@"
+   }
+}' -H 'content-type:application/json;' 127.0.0.1:9650/ext/bc/X
+
+//Replace the new platform address created above in "to"
+curl -X POST --data '{
+   "jsonrpc": "2.0",
+   "method": "platform.importLUV",
+   "params": {
+       "to":"P-luv1rd4h6asdkkrx7s5kx6aal4ksv069vmm8gu6wam",
+       "sourceChain":"X",
+       "changeAddr":"P-luv1s6xrwa9js7yuqtf20vk2cqa3wncasqc4aphv90",
+       "username":"testUser",
+       "password":"C0ntr4señ@"
+   },
+   "id": 5
+}' -H 'content-type:application/json;' 127.0.0.1:9652/ext/bc/P
+
+//Replace the new platform address created above in "address"
+curl -X POST --data '{
+   "jsonrpc":"2.0",
+   "id"     : 1,
+   "method" :"platform.getBalance",
+   "params" :{
+       "address":"P-luv1rd4h6asdkkrx7s5kx6aal4ksv069vmm8gu6wam"
+   }
+ }' -H 'content-type:application/json;' 127.0.0.1:9650/ext/bc/P
+
+//In Ubuntu replace $(gdate with $(date, in mac use gdate, as date uses a different format
+//Replace the reward and change address with platform address created above
+curl -X POST --data '{
+   "jsonrpc": "2.0",
+   "method": "platform.addValidator",
+   "params": {
+       "nodeID":"NodeID-6tTiL1SJsHwBBgEyM9ppJyWEZr8estrgW",
+       "startTime":'$(gdate --date="1 minutes" +%s)',
+       "endTime":'$(gdate --date="30 days" +%s)',
+       "stakeAmount":2000000000000,
+       "rewardAddress":"P-luv1u6hn79cvpf0m5uvxc73fxyflwdyextshdp2uz6",
+       "changeAddr": "P-luv1u6hn79cvpf0m5uvxc73fxyflwdyextshdp2uz6",
+       "delegationFeeRate":10,
+       "username":"testUser",
+       "password":"C0ntr4señ@"
+   },
+   "id": 1
+}' -H 'content-type:application/json;' 127.0.0.1:9690/ext/P
+
+//wait 1 minute, the time specified in the startTime parameter of addValidator
+curl -X POST --data '{
+   "jsonrpc": "2.0",
+   "method": "platform.getCurrentValidators",
+   "params": {},
+   "id": 1
+}' -H 'content-type:application/json;' 127.0.0.1:9650/ext/P
+
+//check the balance of 
+curl -X POST --data '{
+   "jsonrpc":"2.0",
+   "id"     : 1,
+   "method" :"platform.getBalance",
+   "params" :{
+       "address":"P-luv1rd4h6asdkkrx7s5kx6aal4ksv069vmm8gu6wam"
+   }
+ }' -H 'content-type:application/json;' 127.0.0.1:9650/ext/bc/P

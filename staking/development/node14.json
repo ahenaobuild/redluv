@@ -1,0 +1,15 @@
+
+{
+    "public-ip":"127.0.0.1",
+    "snow-sample-size":20,
+    "snow-quorum-size":18,
+    "http-port":9650,
+    "staking-port":9651,
+    "db-dir":"build/db/node",
+    "staking-enabled":true,
+    "staking-tls-cert-file":"staking/development/staker14.crt",
+    "staking-tls-key-file":"staking/development/staker14.key",
+    "bootstrap-ips":"127.0.0.1:9651",
+    "bootstrap-ids":"NodeID-KtNSDKDkPuzUWR6goMsgB8g4HqwZcMvQj",
+    "log-level": "info"
+}

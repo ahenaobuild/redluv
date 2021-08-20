@@ -1,0 +1,8 @@
+{
+    "public-ip":"18.116.236.119",
+    "db-dir":"build/db/node",
+    "staking-tls-cert-file":"staking/development/staker1.crt",
+    "staking-tls-key-file":"staking/development/staker1.key",
+    "bootstrap-ips":"",
+    "log-level": "info"
+}
